@@ -1,1 +1,1 @@
-Deploy all files over HTTPS. Employee PDF import requires internet for PDF.js. Keep private employee JSON outside public hosting. Local storage only.
+Upload all files to the existing HTTPS hosting path. Keep the same app origin and manifest ID. Back up data before reinstalling. Refresh online; reinstall if OS retains old icon.
