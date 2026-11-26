@@ -1,0 +1,22 @@
+// MERGE these helpers and match blocks INSIDE existing match /databases/{database}/documents.
+// Do not replace existing E-Crew rules. Remove any overlapping broad allow rules for ekpi paths.
+function ekSigned() { return request.auth != null; }
+function ekProfile() { return get(/databases/$(database)/documents/ekpi_users/$(request.auth.uid)).data; }
+function ekApproved() { return ekSigned() && ekProfile().status == 'Approved'; }
+function ekAdmin() { return ekApproved() && ekProfile().admin == true; }
+match /ekpi_users/{uid} {
+ allow read: if ekSigned() && (request.auth.uid == uid || ekAdmin());
+ allow create: if ekSigned() && request.auth.uid == uid && request.resource.data.keys().hasOnly(['name','job','email','admin','status','scope']) && request.resource.data.admin == false && request.resource.data.status == 'Pending' && request.resource.data.scope == [] && request.resource.data.email == request.auth.token.email;
+ allow update: if ekAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['scope','status']);
+}
+match /ekpi_employees/{id} {
+ allow read: if ekAdmin() || (ekApproved() && resource.data.role in ekProfile().scope);
+ allow write: if ekAdmin();
+}
+match /ekpi_evaluators/{id} { allow read, write: if ekAdmin(); }
+match /ekpi_settings/{id} { allow read: if ekApproved(); allow write: if ekAdmin(); }
+match /ekpi_reviews/{id} {
+ allow read: if ekAdmin() || (ekApproved() && resource.data.accountEmail == request.auth.token.email);
+ allow create: if ekAdmin() || (ekApproved() && request.resource.data.accountEmail == request.auth.token.email && request.resource.data.status == 'Submitted' && request.resource.data.evaluator == ekProfile().name && request.resource.data.evaluatorJob == ekProfile().job && request.resource.data.role in ekProfile().scope && get(/databases/$(database)/documents/ekpi_employees/$(request.resource.data.emp)).data.role == request.resource.data.role && request.resource.data.evaluatorSign == '');
+ allow update, delete: if ekAdmin();
+}
