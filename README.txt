@@ -1,0 +1,1 @@
+Deploy all files over HTTPS. Employee PDF import requires internet for PDF.js. Keep private employee JSON outside public hosting. Local storage only.
