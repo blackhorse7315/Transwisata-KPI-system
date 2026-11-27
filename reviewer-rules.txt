@@ -1,0 +1,4 @@
+
+match /ekpi_reviewers/{id} {
+  allow read, write: if ekAdmin();
+}

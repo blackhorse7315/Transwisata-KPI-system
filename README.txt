@@ -13,4 +13,6 @@ V2.9.5: Added Staff KPI group separately from Supporting Staff; existing records
 
 V3.1: Configure Job Description Management before evaluating. Templates stored in ekpi_settings/jobDescriptions. Historical snapshots preserved. Templates not included in existing JSON backup.
 
-V3.2: automatic equal job description weight distribution on add/delete; exact cent-percent totals.
+V3.3: automatic equal job description weight distribution on add/delete; exact cent-percent totals.
+
+Reviewer Register requires additional admin-only Firestore rule in reviewer-rules.txt. Reviewer records are not included in legacy JSON backup.
