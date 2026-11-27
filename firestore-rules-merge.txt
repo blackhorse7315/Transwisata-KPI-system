@@ -17,7 +17,7 @@ service cloud.firestore {
     match /operationsManualPortal/{workspace}/{document=**} {
       allow write: if false;
     }
-    // TRANSWISATA e-KPI V6.0
+    // TRANSWISATA e-KPI V6.1
     function ekSigned() { return request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous'; }
     function ekProfile() { return get(/databases/$(database)/documents/ekpi_users/$(request.auth.uid)).data; }
     function ekApproved() { return ekSigned() && ekProfile().status == 'Approved'; }
@@ -51,6 +51,24 @@ service cloud.firestore {
      allow read: if ekAdmin() || (ekApproved() && (resource.data.accountEmail == request.auth.token.email || ekProfile().get('canReview',false) == true || ekProfile().get('canApprove',false) == true));
      allow create: if ekAdmin() || (ekApproved() && request.resource.data.accountEmail == request.auth.token.email && request.resource.data.status == 'Submitted' && request.resource.data.evaluator == ekProfile().name && request.resource.data.evaluatorJob == ekProfile().job && ekProfile().get('canEvaluate',true) == true && (ekProfile().get('allEmployees',false) == true || request.resource.data.role in ekProfile().scope) && (get(/databases/$(database)/documents/ekpi_employees/$(request.resource.data.emp)).data.role == request.resource.data.role || request.resource.data.role in get(/databases/$(database)/documents/ekpi_employees/$(request.resource.data.emp)).data.get('roles', [])) && ownSignature(request.resource.data.evaluatorSign) && request.resource.data.get('approverSign','') == '');
      allow delete: if ekAdmin();
+     // Returned evaluation: original evaluator may correct scores and resubmit.
+     allow update: if ekApproved()
+       && resource.data.status == 'Returned'
+       && resource.data.accountEmail == request.auth.token.email
+       && ekProfile().get('canEvaluate',true) == true
+       && (ekProfile().get('allEmployees',false) == true || resource.data.role in ekProfile().scope)
+       && (get(/databases/$(database)/documents/ekpi_employees/$(resource.data.emp)).data.role == resource.data.role || resource.data.role in get(/databases/$(database)/documents/ekpi_employees/$(resource.data.emp)).data.get('roles',[]))
+       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['scores','evidence','flag','plan','total','evaluatorSign','status','approverSign','decisionNote','decisionUid','decisionName','decisionJob','decisionAt','lastReturnNote','resubmittedAt'])
+       && request.resource.data.status == 'Submitted'
+       && request.resource.data.scores is list && request.resource.data.scores.size() == resource.data.weights.size()
+       && request.resource.data.evidence is list && request.resource.data.evidence.size() == resource.data.weights.size()
+       && request.resource.data.total is number && request.resource.data.total >= 0 && request.resource.data.total <= 100
+       && request.resource.data.flag in ['Yes','No'] && request.resource.data.plan is string
+       && ownSignature(request.resource.data.evaluatorSign)
+       && request.resource.data.approverSign == '' && request.resource.data.decisionNote == ''
+       && request.resource.data.decisionUid == '' && request.resource.data.decisionName == '' && request.resource.data.decisionJob == '' && request.resource.data.decisionAt == null
+       && request.resource.data.lastReturnNote == resource.data.decisionNote
+       && request.resource.data.resubmittedAt == request.time;
      allow update: if ekAdmin() || (ekApproved() && resource.data.accountEmail != request.auth.token.email
      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','decisionNote','decisionUid','decisionName','decisionJob','decisionAt','approverSign'])
      && request.resource.data.decisionUid == request.auth.uid && request.resource.data.decisionName == ekProfile().name && request.resource.data.decisionJob == ekProfile().job
