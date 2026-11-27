@@ -51,3 +51,5 @@ V6.0: Publish updated rules. Admin can delete non-admin e-KPI profiles and perso
 V6.1: Returned evaluations can be revised and resubmitted by their original evaluator. Publish updated rules.
 
 V6.2: Remove signature image borders in previews and reports. No rules changes.
+
+V6.3: automatic signature only; horizontal clickable evaluation history. Rules unchanged.
