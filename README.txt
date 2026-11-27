@@ -45,3 +45,5 @@ V5.7: Publish updated firestore-rules-merge.txt before use. Each evaluator and P
 V5.9: Duplicate editable draft and admin-only delete in evaluation details. Existing V5.7 rules unchanged.
 
 V5.9: Publish rules, then Admin > Evaluator Register > Publish Registration Name List. Verify identity before approval. Republish after changes. Names and job titles are public; signatures are private.
+
+V6.0: Publish updated rules. Admin can delete non-admin e-KPI profiles and personal signatures. Firebase Authentication accounts and historical evaluations remain.
