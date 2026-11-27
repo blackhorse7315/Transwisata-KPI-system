@@ -17,4 +17,6 @@ V3.3: automatic equal job description weight distribution on add/delete; exact c
 
 Reviewer Register requires additional admin-only Firestore rule in reviewer-rules.txt. Reviewer records are not included in legacy JSON backup.
 
-V3.8: Admin-only individual evaluation deletion with confirmation. Existing Firestore rules unchanged.
+V3.9: Admin-only individual evaluation deletion with confirmation. Existing Firestore rules unchanged.
+
+V3.9: Click any employee row to open the existing employee detail/edit form.
