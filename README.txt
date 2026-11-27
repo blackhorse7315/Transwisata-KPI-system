@@ -21,3 +21,5 @@ Reviewer Register requires additional admin-only Firestore rule in reviewer-rule
 V3.9: Admin-only individual evaluation deletion with confirmation. Existing Firestore rules unchanged.
 
 V3.9: Click any employee row to open the existing employee detail/edit form.
+
+V4.5: Editable job description weights, proportional redistribution with exact hundredth-percent totals.
