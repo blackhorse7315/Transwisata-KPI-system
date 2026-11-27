@@ -16,3 +16,5 @@ V3.1: Configure Job Description Management before evaluating. Templates stored i
 V3.3: automatic equal job description weight distribution on add/delete; exact cent-percent totals.
 
 Reviewer Register requires additional admin-only Firestore rule in reviewer-rules.txt. Reviewer records are not included in legacy JSON backup.
+
+V3.8: Admin-only individual evaluation deletion with confirmation. Existing Firestore rules unchanged.
