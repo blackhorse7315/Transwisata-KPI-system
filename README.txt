@@ -22,8 +22,14 @@ V3.9: Admin-only individual evaluation deletion with confirmation. Existing Fire
 
 V3.9: Click any employee row to open the existing employee detail/edit form.
 
-V5.0: Editable job description weights, proportional redistribution with exact hundredth-percent totals.
+V5.3: Editable job description weights, proportional redistribution with exact hundredth-percent totals.
 
-V5.0: Employee details popup; Copy copies profile text to clipboard.
+V5.3: Employee details popup; Copy copies profile text to clipboard.
 
 Profile photos: compressed JPEG stored in employee document.
+
+V5.3: Purchasing job title and default Logistics / Purchasing mapping.
+
+Department retains legacy division database key; new Division uses operationalDivision. Existing records remain unassigned until edited.
+
+V5.3: Admin must review legacy Pilot employee mappings and user scopes. Existing history is unchanged. Legacy Pilot JD templates are fallback only until a new group template is saved.
