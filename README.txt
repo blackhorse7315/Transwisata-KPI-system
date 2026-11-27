@@ -39,3 +39,5 @@ V5.6: Separate job description, KPI target and measurement in evaluation breakdo
 V5.6: Review/approval authorized accounts can view all evaluation history.
 
 V5.6: A4 portrait evaluation print preview for authorized users.
+
+V5.7: Publish updated firestore-rules-merge.txt before use. Each evaluator and President Director uploads their own signature once; saved privately by UID. Existing evaluations are not retroactively signed.

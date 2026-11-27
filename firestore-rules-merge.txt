@@ -34,13 +34,20 @@ service cloud.firestore {
     }
     match /ekpi_evaluators/{id} { allow read, write: if ekAdmin(); }
     match /ekpi_settings/{id} { allow read: if ekApproved(); allow write: if ekAdmin(); }
+    function validOwnSign(s) { return s is string && s.size() > 0 && s.size() <= 250000 && s.matches('data:image/jpeg;base64,[A-Za-z0-9+/=]+'); }
+    function ownSignature(s) { return validOwnSign(s) && s == get(/databases/$(database)/documents/ekpi_signatures/$(request.auth.uid)).data.sign; }
+    match /ekpi_signatures/{uid} {
+      allow read: if ekApproved() && request.auth.uid == uid;
+      allow create, update: if ekApproved() && request.auth.uid == uid && request.resource.data.keys().hasOnly(['sign']) && validOwnSign(request.resource.data.sign);
+    }
     match /ekpi_reviews/{id} {
      allow read: if ekAdmin() || (ekApproved() && (resource.data.accountEmail == request.auth.token.email || ekProfile().get('canReview',false) == true || ekProfile().get('canApprove',false) == true));
-     allow create: if ekAdmin() || (ekApproved() && request.resource.data.accountEmail == request.auth.token.email && request.resource.data.status == 'Submitted' && request.resource.data.evaluator == ekProfile().name && request.resource.data.evaluatorJob == ekProfile().job && ekProfile().get('canEvaluate',true) == true && (ekProfile().get('allEmployees',false) == true || request.resource.data.role in ekProfile().scope) && (get(/databases/$(database)/documents/ekpi_employees/$(request.resource.data.emp)).data.role == request.resource.data.role || request.resource.data.role in get(/databases/$(database)/documents/ekpi_employees/$(request.resource.data.emp)).data.get('roles', [])) && request.resource.data.evaluatorSign == '');
+     allow create: if ekAdmin() || (ekApproved() && request.resource.data.accountEmail == request.auth.token.email && request.resource.data.status == 'Submitted' && request.resource.data.evaluator == ekProfile().name && request.resource.data.evaluatorJob == ekProfile().job && ekProfile().get('canEvaluate',true) == true && (ekProfile().get('allEmployees',false) == true || request.resource.data.role in ekProfile().scope) && (get(/databases/$(database)/documents/ekpi_employees/$(request.resource.data.emp)).data.role == request.resource.data.role || request.resource.data.role in get(/databases/$(database)/documents/ekpi_employees/$(request.resource.data.emp)).data.get('roles', [])) && ownSignature(request.resource.data.evaluatorSign) && request.resource.data.get('approverSign','') == '');
      allow delete: if ekAdmin();
      allow update: if ekAdmin() || (ekApproved() && resource.data.accountEmail != request.auth.token.email
-     && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','decisionNote','decisionUid','decisionName','decisionJob','decisionAt'])
+     && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','decisionNote','decisionUid','decisionName','decisionJob','decisionAt','approverSign'])
      && request.resource.data.decisionUid == request.auth.uid && request.resource.data.decisionName == ekProfile().name && request.resource.data.decisionJob == ekProfile().job
+     && ((request.resource.data.status == 'Approved' && ekProfile().job == 'President Director' && ownSignature(request.resource.data.approverSign)) || ((request.resource.data.status != 'Approved' || ekProfile().job != 'President Director') && request.resource.data.get('approverSign','') == ''))
      && request.resource.data.decisionAt == request.time && request.resource.data.decisionNote is string && request.resource.data.decisionNote.size() > 0
      && ((ekProfile().get('canReview',false) == true && resource.data.status == 'Submitted' && request.resource.data.status in ['Reviewed','Returned']) || (ekProfile().get('canApprove',false) == true && resource.data.status in ['Submitted','Reviewed'] && request.resource.data.status in ['Approved','Returned'])));
     }
