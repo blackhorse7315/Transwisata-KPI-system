@@ -12,3 +12,5 @@ V2.9.5: Admin may migrate legacy groups from Employee Register; existing reviews
 V2.9.5: Added Staff KPI group separately from Supporting Staff; existing records unchanged.
 
 V3.1: Configure Job Description Management before evaluating. Templates stored in ekpi_settings/jobDescriptions. Historical snapshots preserved. Templates not included in existing JSON backup.
+
+V3.2: automatic equal job description weight distribution on add/delete; exact cent-percent totals.
