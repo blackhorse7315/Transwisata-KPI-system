@@ -24,7 +24,7 @@ service cloud.firestore {
     function ekAdmin() { return ekApproved() && ekProfile().admin == true; }
     match /ekpi_users/{uid} {
      allow read: if ekSigned() && (request.auth.uid == uid || ekAdmin());
-     allow create: if ekSigned() && request.auth.uid == uid && request.resource.data.keys().hasOnly(['name','job','email','admin','status','scope']) && request.resource.data.admin == false && request.resource.data.status == 'Pending' && request.resource.data.scope == [] && request.resource.data.email == request.auth.token.email;
+     allow create: if ekSigned() && request.auth.uid == uid && request.resource.data.keys().hasOnly(['name','job','email','admin','status','scope','evaluatorId']) && request.resource.data.admin == false && request.resource.data.status == 'Pending' && request.resource.data.scope == [] && request.resource.data.email == request.auth.token.email && request.resource.data.evaluatorId is string && request.resource.data.name == get(/databases/$(database)/documents/ekpi_registration_directory/$(request.resource.data.evaluatorId)).data.name && request.resource.data.job == get(/databases/$(database)/documents/ekpi_registration_directory/$(request.resource.data.evaluatorId)).data.job;
      allow update: if ekAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['scope','status','allEmployees','canEvaluate','canReview','canApprove']);
     }
     match /ekpi_employees/{id} {
@@ -34,11 +34,16 @@ service cloud.firestore {
     }
     match /ekpi_evaluators/{id} { allow read, write: if ekAdmin(); }
     match /ekpi_settings/{id} { allow read: if ekApproved(); allow write: if ekAdmin(); }
-    function validOwnSign(s) { return s is string && s.size() > 0 && s.size() <= 250000 && s.matches('data:image/jpeg;base64,[A-Za-z0-9+/=]+'); }
+    function validOwnSign(s) { return s is string && s.size() > 0 && s.size() <= 250000 && s.matches('data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+'); }
     function ownSignature(s) { return validOwnSign(s) && s == get(/databases/$(database)/documents/ekpi_signatures/$(request.auth.uid)).data.sign; }
+    match /ekpi_registration_directory/{id} {
+      allow read: if true;
+      allow create, update: if ekAdmin() && request.resource.data.keys().hasOnly(['name','job']) && request.resource.data.name is string && request.resource.data.job is string;
+      allow delete: if ekAdmin();
+    }
     match /ekpi_signatures/{uid} {
       allow read: if ekApproved() && request.auth.uid == uid;
-      allow create, update: if ekApproved() && request.auth.uid == uid && request.resource.data.keys().hasOnly(['sign']) && validOwnSign(request.resource.data.sign);
+      allow create, update: if (ekAdmin() || (ekApproved() && request.auth.uid == uid)) && request.resource.data.keys().hasOnly(['sign']) && validOwnSign(request.resource.data.sign);
     }
     match /ekpi_reviews/{id} {
      allow read: if ekAdmin() || (ekApproved() && (resource.data.accountEmail == request.auth.token.email || ekProfile().get('canReview',false) == true || ekProfile().get('canApprove',false) == true));
