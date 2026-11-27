@@ -1,3 +1,4 @@
+V4.0: Publish complete firestore-rules-merge.txt before deploying. Existing single groups remain supported.
 TWA e-KPI V2.9.1 — Firebase Cloud Edition
 1. Firebase Console project ecrew-absensi-183ac: enable Authentication Email/Password and Cloud Firestore. Add hosting domain to Authentication authorized domains.
 2. Merge firestore-rules-merge.txt into existing rules, do not replace other apps rules. Review overlapping wildcard allows; test in emulator before production.
