@@ -22,4 +22,8 @@ V3.9: Admin-only individual evaluation deletion with confirmation. Existing Fire
 
 V3.9: Click any employee row to open the existing employee detail/edit form.
 
-V4.5: Editable job description weights, proportional redistribution with exact hundredth-percent totals.
+V4.7: Editable job description weights, proportional redistribution with exact hundredth-percent totals.
+
+V4.7: Employee details popup; Copy copies profile text to clipboard.
+
+Profile photos: compressed JPEG stored in employee document.
