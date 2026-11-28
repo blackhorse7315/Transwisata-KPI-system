@@ -63,3 +63,5 @@ V6.8: Employee photo in evaluation details; new reviews store photo snapshot.
 V6.8: Shared admin/evaluator report layout and employee photo in print.
 
 V6.8: live Employee Register search.
+
+V6.9: Admin Employee Details includes individual A4 employee profile print / save PDF. No rules change.
