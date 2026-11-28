@@ -54,10 +54,12 @@ V6.2: Remove signature image borders in previews and reports. No rules changes.
 
 V6.3: automatic signature only; horizontal clickable evaluation history. Rules unchanged.
 
-V6.7: Justified PDF report paragraphs.
+V6.8: Justified PDF report paragraphs.
 
-V6.7: Evaluation Details opens the native print dialog automatically after report images load. Manual print remains available.
+V6.8: Evaluation Details opens the native print dialog automatically after report images load. Manual print remains available.
 
-V6.7: Employee photo in evaluation details; new reviews store photo snapshot.
+V6.8: Employee photo in evaluation details; new reviews store photo snapshot.
 
-V6.7: Shared admin/evaluator report layout and employee photo in print.
+V6.8: Shared admin/evaluator report layout and employee photo in print.
+
+V6.8: live Employee Register search.
